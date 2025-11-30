@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.aagamshah.newartxassignment.data.AppDatabase
 import com.aagamshah.newartxassignment.data.repository.UserRepositoryImpl
+import com.aagamshah.newartxassignment.data.repositoryimpl.ProfileRepositoryImpl
+import com.aagamshah.newartxassignment.domain.repository.ProfileRepository
 import com.aagamshah.newartxassignment.domain.repository.UserRepository
 import com.aagamshah.newartxassignment.utils.Constants
 import retrofit2.Retrofit
@@ -33,4 +35,9 @@ class AppContainer(private val context: Context) {
     val userRepository: UserRepository by lazy {
         UserRepositoryImpl(userApi, database)
     }
+
+    val profileRepository: ProfileRepository by lazy {
+        ProfileRepositoryImpl(userApi, database)
+    }
+
 }

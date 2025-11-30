@@ -5,8 +5,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.aagamshah.newartxassignment.data.model.RemoteKeys
-import com.aagamshah.newartxassignment.data.model.UserEntity
+import com.aagamshah.newartxassignment.data.entity.RemoteKeys
+import com.aagamshah.newartxassignment.data.entity.UserEntity
 
 @Dao
 interface UserDao {

@@ -1,4 +1,4 @@
-package com.aagamshah.newartxassignment.presentation
+package com.aagamshah.newartxassignment.presentation.homescreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +29,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.aagamshah.newartxassignment.MyApplication
 import com.aagamshah.newartxassignment.domain.model.User
+import com.aagamshah.newartxassignment.navigation.Routes
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -52,7 +53,7 @@ fun HomeScreen(navController: NavHostController) {
                 label = { Text("Search Users") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                    .padding(16.dp),
                 singleLine = true
             )
         }
@@ -70,7 +71,13 @@ fun HomeScreen(navController: NavHostController) {
             ) { index ->
                 val user = users[index]
                 if (user != null) {
-                    UserRow(user)
+                    UserRow(
+                        user = user,
+                        onClick = {
+
+                            navController.navigate(Routes.ProfileRoute(user.id))
+                        }
+                    )
                 }
             }
 
@@ -123,8 +130,12 @@ fun HomeScreen(navController: NavHostController) {
 }
 
 @Composable
-fun UserRow(user: User) {
+fun UserRow(
+    user: User,
+    onClick: () -> Unit
+) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),

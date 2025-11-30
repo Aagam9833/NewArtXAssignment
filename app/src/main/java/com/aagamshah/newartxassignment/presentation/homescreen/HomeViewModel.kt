@@ -1,4 +1,4 @@
-package com.aagamshah.newartxassignment.presentation
+package com.aagamshah.newartxassignment.presentation.homescreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

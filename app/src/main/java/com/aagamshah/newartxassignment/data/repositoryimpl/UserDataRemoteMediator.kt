@@ -6,8 +6,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.aagamshah.newartxassignment.data.AppDatabase
-import com.aagamshah.newartxassignment.data.model.RemoteKeys
-import com.aagamshah.newartxassignment.data.model.UserEntity
+import com.aagamshah.newartxassignment.data.entity.RemoteKeys
+import com.aagamshah.newartxassignment.data.entity.UserEntity
 import com.aagamshah.newartxassignment.data.remote.ApiService
 
 @OptIn(ExperimentalPagingApi::class)

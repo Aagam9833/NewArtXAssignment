@@ -1,7 +1,9 @@
 package com.aagamshah.newartxassignment.data.remote
 
+import com.aagamshah.newartxassignment.data.model.PostResponse
 import com.aagamshah.newartxassignment.data.model.UserResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -17,4 +19,10 @@ interface ApiService {
         @Query("limit") limit: Int,
         @Query("skip") skip: Int
     ): UserResponse
+
+    @GET("posts/user/{userId}")
+    suspend fun getUserPosts(
+        @Path("userId") userId: Int
+    ): PostResponse
+
 }
