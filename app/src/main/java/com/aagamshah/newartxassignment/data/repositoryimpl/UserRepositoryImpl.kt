@@ -1,4 +1,4 @@
-package com.aagamshah.newartxassignment.data.repository
+package com.aagamshah.newartxassignment.data.repositoryimpl
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.aagamshah.newartxassignment.data.AppDatabase
 import com.aagamshah.newartxassignment.data.remote.ApiService
-import com.aagamshah.newartxassignment.data.repositoryimpl.UserRemoteMediator
 import com.aagamshah.newartxassignment.domain.model.User
+import com.aagamshah.newartxassignment.domain.repository.UserPreferencesRepository
 import com.aagamshah.newartxassignment.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalPagingApi::class)
 class UserRepositoryImpl(
     private val api: ApiService,
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val preferences: UserPreferencesRepository
 ) : UserRepository {
 
     override fun getUsers(query: String): Flow<PagingData<User>> {
@@ -26,8 +27,7 @@ class UserRepositoryImpl(
                 enablePlaceholders = false,
                 initialLoadSize = 20
             ),
-            remoteMediator = UserRemoteMediator(query, api, database),
-
+            remoteMediator = UserRemoteMediator(query, api, database, preferences),
             pagingSourceFactory = { database.userDao().pagingSource(query) }
         ).flow.map { pagingData ->
             pagingData.map { entity ->

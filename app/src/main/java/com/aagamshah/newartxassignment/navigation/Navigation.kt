@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.aagamshah.newartxassignment.presentation.homescreen.HomeScreen
 import com.aagamshah.newartxassignment.presentation.postscreen.UserProfileScreen
+import com.aagamshah.newartxassignment.presentation.settingsscreen.SettingsScreen
 
 @Composable
 fun Navigation() {
@@ -26,6 +27,10 @@ fun Navigation() {
                 userId = route.id,
                 navController = navController
             )
+        }
+
+        composable<Routes.SettingsRoute> {
+            SettingsScreen(navController = navController)
         }
     }
 }

@@ -19,6 +19,7 @@ retrofitInterceptor = "5.0.0-alpha.14"
 pagination = "3.3.0"
 ksp = "2.0.21-1.0.28"
 room = "2.6.1"
+datastore = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,9 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-kotlin = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+#Datastore
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

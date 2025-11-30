@@ -23,7 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -66,9 +66,16 @@ fun UserProfileScreen(
     val app = context.applicationContext as MyApplication
 
     val repository = app.container.profileRepository
+    val preferences = app.container.userPreferencesRepository
+    val connectivity = app.container.connectivityObserver
 
     val viewModel: UserProfileViewModel = viewModel(
-        factory = UserProfileViewModel.Factory(userId, repository)
+        factory = UserProfileViewModel.Factory(
+            userId,
+            repository,
+            preferences,
+            connectivity
+        )
     )
 
     val state by viewModel.uiState.collectAsState()
@@ -79,7 +86,7 @@ fun UserProfileScreen(
                 title = { Text("Agent Profile") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

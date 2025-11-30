@@ -6,15 +6,18 @@ import com.aagamshah.newartxassignment.data.remote.ApiService
 import com.aagamshah.newartxassignment.domain.model.Post
 import com.aagamshah.newartxassignment.domain.model.User
 import com.aagamshah.newartxassignment.domain.repository.ProfileRepository
+import com.aagamshah.newartxassignment.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class ProfileRepositoryImpl(
     private val api: ApiService,
-    private val db: AppDatabase
+    private val db: AppDatabase,
+    private val preferences: UserPreferencesRepository
 ) : ProfileRepository {
 
     override suspend fun getUserDetails(userId: Int): User = withContext(Dispatchers.IO) {
@@ -30,6 +33,11 @@ class ProfileRepositoryImpl(
     }
 
     override suspend fun refreshPosts(userId: Int) = withContext(Dispatchers.IO) {
+        val isOfflineMode = preferences.offlineModeFlow.first()
+        if (isOfflineMode) {
+            return@withContext
+        }
+
         try {
             val response = api.getUserPosts(userId)
             val entities = response.posts.map { dto ->
@@ -42,6 +50,7 @@ class ProfileRepositoryImpl(
                 )
             }
             db.postDao().insertPosts(entities)
+            preferences.updateLastRefreshTime(System.currentTimeMillis())
         } catch (e: Exception) {
             e.printStackTrace()
         }

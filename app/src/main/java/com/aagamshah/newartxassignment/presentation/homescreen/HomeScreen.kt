@@ -1,5 +1,6 @@
 package com.aagamshah.newartxassignment.presentation.homescreen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,15 +8,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -44,6 +49,28 @@ fun HomeScreen(navController: NavHostController) {
     val users = viewModel.userPagingFlow.collectAsLazyPagingItems()
     val searchQuery by viewModel.searchQuery.collectAsState()
 
+    val refreshState = users.loadState.refresh
+    LaunchedEffect(key1 = refreshState) {
+        if (refreshState is LoadState.Error) {
+            Toast.makeText(
+                context,
+                "Error: ${refreshState.error.localizedMessage ?: "Unknown error"}",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    val appendState = users.loadState.append
+    LaunchedEffect(key1 = appendState) {
+        if (appendState is LoadState.Error) {
+            Toast.makeText(
+                context,
+                "Cannot load more items. Check your internet.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -56,6 +83,18 @@ fun HomeScreen(navController: NavHostController) {
                     .padding(16.dp),
                 singleLine = true
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(Routes.SettingsRoute) },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
     ) { innerPadding ->
         LazyColumn(
@@ -74,7 +113,6 @@ fun HomeScreen(navController: NavHostController) {
                     UserRow(
                         user = user,
                         onClick = {
-
                             navController.navigate(Routes.ProfileRoute(user.id))
                         }
                     )
@@ -91,17 +129,6 @@ fun HomeScreen(navController: NavHostController) {
                         }
                     }
 
-                    loadState.refresh is LoadState.Error -> {
-                        val e = users.loadState.refresh as LoadState.Error
-                        item {
-                            ErrorItem(
-                                message = e.error.localizedMessage ?: "Unknown Error",
-                                onRetry = { retry() },
-                                modifier = Modifier.fillParentMaxSize()
-                            )
-                        }
-                    }
-
                     loadState.append is LoadState.Loading -> {
                         item {
                             Box(
@@ -112,15 +139,6 @@ fun HomeScreen(navController: NavHostController) {
                             ) {
                                 CircularProgressIndicator()
                             }
-                        }
-                    }
-
-                    loadState.append is LoadState.Error -> {
-                        item {
-                            ErrorItem(
-                                message = "Error loading more data",
-                                onRetry = { retry() }
-                            )
                         }
                     }
                 }
@@ -151,13 +169,5 @@ fun UserRow(
                 style = MaterialTheme.typography.bodySmall
             )
         }
-    }
-}
-
-@Composable
-fun ErrorItem(message: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(message, color = MaterialTheme.colorScheme.error)
-        Button(onClick = onRetry) { Text("Retry") }
     }
 }

@@ -12,5 +12,9 @@ sealed interface Routes {
 
     @Serializable
     data class ProfileRoute(val id: Int)
+
+    @Serializable
+    object SettingsRoute
+
 }
 

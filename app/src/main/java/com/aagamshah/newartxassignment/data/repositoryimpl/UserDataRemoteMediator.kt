@@ -9,12 +9,15 @@ import com.aagamshah.newartxassignment.data.AppDatabase
 import com.aagamshah.newartxassignment.data.entity.RemoteKeys
 import com.aagamshah.newartxassignment.data.entity.UserEntity
 import com.aagamshah.newartxassignment.data.remote.ApiService
+import com.aagamshah.newartxassignment.domain.repository.UserPreferencesRepository
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalPagingApi::class)
 class UserRemoteMediator(
     private val query: String,
     private val api: ApiService,
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val preferences: UserPreferencesRepository
 ) : RemoteMediator<Int, UserEntity>() {
 
     override suspend fun load(
@@ -22,6 +25,11 @@ class UserRemoteMediator(
         state: PagingState<Int, UserEntity>
     ): MediatorResult {
         return try {
+            val isOfflineOnly = preferences.offlineModeFlow.first()
+            if (isOfflineOnly) {
+                return MediatorResult.Success(endOfPaginationReached = true)
+            }
+
             val skip = when (loadType) {
                 LoadType.REFRESH -> 0
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
